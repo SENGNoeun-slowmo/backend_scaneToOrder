@@ -19,15 +19,20 @@ app.use(helmet()); // good security headers
 
 // CORS - be strict in production
 
+
+const allowedOrigins = [
+  "http://localhost:5173", // dev
+  "https://scanetoorder.vercel.app", // production frontend
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "https://scanetoorder-git-main-sengnoeun-slowmos-projects.vercel.app"
-  ],
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: ["Content-Type", "Authorization"], // add auth header if needed
+  credentials: true,
 }));
 
+// Handle OPTIONS preflight
 app.options("*", cors());
 
 // Log requests (dev only in production)
