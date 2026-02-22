@@ -3,7 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import ordersRoutes from './routes/orders';     // old
+import ordersRoutes from './routes/orders';
 dotenv.config();
 
 const app = express();
@@ -18,12 +18,17 @@ const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
 app.use(helmet()); // good security headers
 
 // CORS - be strict in production
+
 app.use(cors({
-  origin: frontendUrl,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  credentials: true,
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: [
+    "http://localhost:5173",
+    "https://scanetoorder-git-main-sengnoeun-slowmos-projects.vercel.app"
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type"],
 }));
+
+app.options("*", cors());
 
 // Log requests (dev only in production)
 if (process.env.NODE_ENV !== 'production') {
