@@ -23,8 +23,10 @@ export const notifyNewOrder = async (req: Request, res: Response) => {
       })),
     };
 
-    await sendOrderNotification(formattedOrder);
-    console.log('✅ Telegram notification sent for order:', orderId);
+    // ... ផ្នែកដើមដដែល
+
+await sendOrderNotification(formattedOrder);
+console.log('✅ Telegram notification attempted for order:', orderId);  // បន្ថែម log នេះ
 
     return res.status(200).json({ success: true, message: 'Notification sent' });
   } catch (error) {

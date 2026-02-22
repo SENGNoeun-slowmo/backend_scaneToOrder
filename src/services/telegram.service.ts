@@ -5,15 +5,23 @@ dotenv.config();
 const token = process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.TELEGRAM_CHAT_ID;
 
+// ← បន្ថែម proxy នៅទីនេះ
+const proxyBase = 'https://telegram-cloudflare-proxy-production-fc60.up.railway.app/bot' + token;
+
 let bot: TelegramBot | null = null;
 
 if (token && chatId) {
-  // polling: false because we only send messages from this backend manually
-  bot = new TelegramBot(token, { polling: false });
-  console.log('✅ Telegram bot initialized.');
+  bot = new TelegramBot(token, {
+    polling: false,
+    request: {
+      url: proxyBase + '/'   // ← ដាក់ proxy នៅទីនេះ ដើម្បី override base URL ទាំងអស់
+    }
+  });
+  console.log('✅ Telegram bot initialized with proxy.');
 } else {
-  console.warn('⚠️ Telegram credentials not found in .env. Bot features disabled.');
+  console.warn('⚠️ Telegram credentials not found. Bot disabled.');
 }
+
 interface OrderItem {
   name: string;
   quantity: number;
@@ -31,14 +39,12 @@ interface OrderInfo {
 }
 
 export const sendOrderNotification = async (order: OrderInfo) => {
-  if (!bot || !chatId) { 
+  if (!bot || !chatId) {
     console.log('Telegram bot not configured. Skipping notification.');
     return;
   }
 
-
   try {
-   
     const itemsList = order.items
       .map(
         (item) =>
@@ -63,7 +69,11 @@ ${order.customerNote ? `\n*Customer Note:* ${order.customerNote}` : ''}
 `;
 
     await bot.sendMessage(chatId, message, { parse_mode: 'Markdown' });
-  } catch (error) {
-    console.error('Failed to send Telegram message:', error);
+    console.log('✅ Telegram notification sent via proxy for order:', order.id);
+  } catch (error: any) {
+    console.error('❌ Failed to send Telegram via proxy:', error.message || error);
+    if (error.response?.body) {
+      console.error('Proxy/Telegram details:', JSON.stringify(error.response.body, null, 2));
+    }
   }
 };
