@@ -6,7 +6,7 @@ const token = process.env.TELEGRAM_BOT_TOKEN;
 const chatId = process.env.TELEGRAM_CHAT_ID;
 
 // ← បន្ថែម proxy នៅទីនេះ
-const proxyBase = 'https://telegram-cloudflare-proxy-production-fc60.up.railway.app/bot' + token;
+const proxyBase = 'https://telegram-api-proxy.tg-proxy-f4zczn.workers.dev/bot' + token;
 
 let bot: TelegramBot | null = null;
 
