@@ -9,7 +9,7 @@ dotenv.config();
 const app = express();
 
 // Use Railway-provided PORT (required on Railway)
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 3001;
 
 // Use the actual deployed frontend URL in production
 const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
